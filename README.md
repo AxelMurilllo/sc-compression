@@ -1,6 +1,16 @@
-# Sc Compression
+# Clash of Clans Data Extractor (Fork of Sc Compression)
+This is a modified fork of sc-compression, tailored specifically for decompressing Clash of Clans game asset files for use in data projects, tooling, and analysis.
+This version adds support for:
+
+- Outputting decompressed files to a separate output/ directory instead of overwriting original files
+
+- An interactive CLI tool to select a file or directory to decompress
+
+- Cleaner project layout for integration into pipelines (e.g., JSON/SQL conversion)
+
 This module is intended to compress and decompress Supercell assets.  
-It supports the following signatures:
+✨ Supported Signatures:
+
 
 | signature | description | decompression | compression |
 | --- | --- |:---:|:---:|
@@ -39,19 +49,41 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { decompress } from 'sc-compression';
 
-const files = await readdir('coc-13.0.4/logic');
+const inputPath = './assets/logic';
+const outputPath = './output';
+await mkdir(outputPath, { recursive: true });
+
+const files = await readdir('inputPath');
 for (const file of files) {
-    const filepath = resolve(directory, file);
-    const buffer = await readFile(filepath);
+    const filepath = resolve(inputPath, file);
+    const buffer = await readFile(inputPath);
     const decompressed = await decompress(buffer);
-    await writeFile(filepath, decompressed);
+    await writeFile(resolve(outputPath, file + '.csv'), decompressed);
 }
 ```
 See tests for additional implementation examples.
 
-## Step by step guide for non-developers
-  - Make sure you have Node.js installed (https://nodejs.org/en/)
-  - Run ``npm install -g sc-compression`` in a terminal
-  - Download examples/decompress.mjs from this repository
-  - Run ``node decompress.mjs`` in a terminal
+## 🧪 Step-by-Step (For Non-Developers)
+
+1. ✅ Install [Node.js](https://nodejs.org/en/)
+2. ✅ Open a terminal and run:
+   ```bash
+   npm install -g sc-compression
+   ```
+3. ✅ Clone this repository or download `examples/decompress.mjs`
+4. ✅ Run the script (within the same directory as decompress.mjs):
+   ```bash
+   node decompress.mjs
+   ```
+5. ✅ When prompted, paste the full path to the folder containing game files (e.g., `C:/Users/you/Desktop/resources/assets/logic`)
+6. ✅ Check the `output/` folder for decompressed `.csv` files
   
+## 🚀 Ideal Use Cases:
+
+- Clash of Clans API and tooling extensions
+
+- Game data analysis (buildings, upgrades, units)
+
+- Exporting balance data to JSON, PostgreSQL, or spreadsheets
+
+Thanks for making this tool! I was struggling to get game data!
